@@ -38,4 +38,4 @@ def explain(req: ExplainRequest):
         model="command-r-plus",
         temperature=0.7,
     )
-    return f"{response.text}"
+    return response.text
