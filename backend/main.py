@@ -34,8 +34,8 @@ def read_root():
 @app.post("/api/explain")
 def explain(req: ExplainRequest):
     response = client.chat(
-        message=f"Explaining the topic: {req.topic}. Provide a detailed explanation suitable for a 10-year-old. Use simple language and examples where possible.",
+        message=f"Explain the topic: {req.topic} like I'm 10 years old.",
         model="command-r-plus",
         temperature=0.7,
     )
-    return f"{response.text}"
+    return { "explanation": response.text }
