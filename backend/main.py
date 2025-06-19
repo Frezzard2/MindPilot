@@ -11,6 +11,7 @@ api_key = os.getenv("COHERE_API_KEY")
 
 class ExplainRequest(BaseModel):
     topic: str
+    subject: str
 
 client = cohere.Client(api_key)
 if not api_key:
@@ -33,8 +34,9 @@ def read_root():
 
 @app.post("/api/explain")
 def explain(req: ExplainRequest):
+    messages = f"Explain the topic: {req.topic} in the subject of {req.subject} like I'm 10 years old."
     response = client.chat(
-        message=f"Explain the topic: {req.topic} like I'm 10 years old.",
+        message=messages,
         model="command-r-plus",
         temperature=0.7,
     )

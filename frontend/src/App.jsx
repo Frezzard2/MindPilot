@@ -1,54 +1,100 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import { FiSend, FiBookOpen, FiLoader } from "react-icons/fi";
+import "./App.css";
 
 function App() {
   const [topic, setTopic] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
     setResult("");
-
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/explain", { topic });
-      // Backend válasz: { explanation: "szöveg" }
-      setResult(response.data.explanation);
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong. Please try again.");
+      const response = await axios.post("http://localhost:8000/api/explain", {
+        topic,
+      });
+      console.log("RESPONSE:", response.data);
+      setResult(response.data);
+    } catch (error) {
+      console.error("Error:", error);
+      setResult("An error occurred while fetching the explanation.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "auto", padding: "2rem" }}>
-      <h1>MindPilot</h1>
-      <form onSubmit={handleSubmit}>
+    <div
+      style={{
+        maxWidth: "600px",
+        margin: "auto",
+        padding: "2rem",
+        fontFamily: "Arial, sans-serif",
+        color: "#111",
+      }}
+    >
+      <h1 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <FiBookOpen /> MindPilot
+      </h1>
+      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem" }}>
         <input
           type="text"
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           placeholder="Enter a topic"
-          required
-          style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
+          style={{
+            flex: 1,
+            padding: "0.5rem",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+          }}
         />
-        <button type="submit" style={{ marginTop: "1rem", padding: "0.5rem 1rem", fontSize: "1rem" }}>
-          Explain
+        <button
+          type="submit"
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: "#4f46e5",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <FiSend /> Explain
         </button>
       </form>
 
-      {loading && <p>Loading...</p>}
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {loading && (
+        <p
+          className="spin"
+          style={{
+            marginTop: "1rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <FiLoader /> Loading...
+        </p>
+      )}
 
       {result && (
-        <div style={{ marginTop: "2rem", background: "#f5f5f5", padding: "1rem", whiteSpace: "pre-wrap" }}>
-          <h2>Explanation</h2>
+        <div
+          style={{
+            marginTop: "2rem",
+            background: "#f5f5f5",
+            padding: "1rem",
+            borderRadius: "4px",
+          }}
+        >
+          <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <FiBookOpen /> Explanation
+          </h2>
           <p>{result}</p>
         </div>
       )}
