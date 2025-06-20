@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { FiSend, FiBookOpen, FiLoader } from "react-icons/fi";
+import { FiSend, FiBookOpen, FiLoader, FiDownload } from "react-icons/fi";
 import "./App.css";
 
 function App() {
@@ -29,6 +29,18 @@ function App() {
   };
 
   const subjects = ["General", "Math", "History", "Physics", "Biology"];
+
+  const handleDownload = () => {
+    const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${topic.replace(/\s+/g, "_")}_explanation.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div
@@ -120,6 +132,23 @@ function App() {
             <FiBookOpen /> Explanation
           </h2>
           <p>{result}</p>
+          <button
+            onClick={handleDownload}
+            style={{
+              marginTop: "1rem",
+              padding: "0.5rem 1rem",
+              backgroundColor: "#10b981",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <FiDownload /> Save Explanation
+            </button>
         </div>
       )}
     </div>
