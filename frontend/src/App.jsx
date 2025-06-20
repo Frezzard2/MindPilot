@@ -4,8 +4,22 @@ import { FiSend, FiBookOpen, FiLoader, FiDownload } from "react-icons/fi";
 import "./App.css";
 
 function App() {
+
+  const subjects = [
+    { id: "math", label: "Mathematics"},
+    { id: "prog", label: "Programming"},
+    { id: "phys", label: "Physics"},
+    { id: "chem", label: "Chemistry"},
+    { id: "bio", label: "Biology"},
+    { id: "hist", label: "History"},
+    { id: "geo", label: "Geography"},
+    { id: "eng", label: "English"},
+    { id: "art", label: "Art",},
+    { id: "music", label: "Music"},
+];
+
   const [topic, setTopic] = useState("");
-  const [subject, setSubject] = useState("General");
+  const [selectedSubject, setSelectedSubject] = useState(subjects[0].id);
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +30,7 @@ function App() {
     try {
       const response = await axios.post("http://localhost:8000/api/explain", {
         topic,
-        subject,
+        subject: selectedSubject,
       });
       console.log("RESPONSE:", response.data);
       setResult(response.data.explanation);
@@ -27,8 +41,6 @@ function App() {
       setLoading(false);
     }
   };
-
-  const subjects = ["General", "Math", "History", "Physics", "Biology"];
 
   const handleDownload = () => {
     const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
@@ -84,26 +96,25 @@ function App() {
         >
           <FiSend /> Explain
         </button>
-      </form>
-
-      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-        {subjects.map((s) => (
-          <button
-            key={s}
-            onClick={() => setSubject(s)}
+          <select
+            value={selectedSubject}
+            onChange={(e) => setSelectedSubject(e.target.value)}
             style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: subject === s ? "#4f46e5" : "#e5e7eb",
-              color: subject === s ? "white" : "#111",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
+              padding: "0.5rem",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              marginBottom: "1rem",
+              width: "100%",
             }}
           >
-            {s}
-          </button>
-        ))}
-      </div>
+            {subjects.map((subject) => (
+              <option key={subject.id} value={subject.id}>
+                {subject.label}
+              </option>
+            ))}
+          </select>
+
+      </form>
 
       {loading && (
         <p
