@@ -5,6 +5,7 @@ import "./App.css";
 
 function App() {
   const [topic, setTopic] = useState("");
+  const [subject, setSubject] = useState("General");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -15,9 +16,10 @@ function App() {
     try {
       const response = await axios.post("http://localhost:8000/api/explain", {
         topic,
+        subject,
       });
       console.log("RESPONSE:", response.data);
-      setResult(response.data);
+      setResult(response.data.explanation);
     } catch (error) {
       console.error("Error:", error);
       setResult("An error occurred while fetching the explanation.");
@@ -25,6 +27,8 @@ function App() {
       setLoading(false);
     }
   };
+
+  const subjects = ["General", "Math", "History", "Physics", "Biology"];
 
   return (
     <div
@@ -39,7 +43,8 @@ function App() {
       <h1 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
         <FiBookOpen /> MindPilot
       </h1>
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem" }}>
+
+      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
         <input
           type="text"
           value={topic}
@@ -68,6 +73,25 @@ function App() {
           <FiSend /> Explain
         </button>
       </form>
+
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+        {subjects.map((s) => (
+          <button
+            key={s}
+            onClick={() => setSubject(s)}
+            style={{
+              padding: "0.5rem 1rem",
+              backgroundColor: subject === s ? "#4f46e5" : "#e5e7eb",
+              color: subject === s ? "white" : "#111",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+            }}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
 
       {loading && (
         <p
