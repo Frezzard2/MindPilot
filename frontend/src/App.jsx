@@ -6,10 +6,6 @@ import { FiSend, FiBookOpen, FiLoader, FiDownload } from "react-icons/fi";
 import "./App.css";
 
 
-useEffect(() => {
-  loadSavedExplanations();
-}, []);
-
 function App() {
 
   const subjects = [
@@ -50,6 +46,10 @@ function App() {
     const saved = JSON.parse(localStorage.getItem("mindpilot_explanations")) || [];
     setSavedExplanations(saved);
   };
+
+  useEffect(() => {
+  loadSavedExplanations();
+}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
