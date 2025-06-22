@@ -29,6 +29,7 @@ app.add_middleware(
 class ExplainRequest(BaseModel):
     topic: str
     subject: Optional[str] = "general"
+    detail: str
 
 @app.get("/")
 def read_root():
@@ -36,9 +37,16 @@ def read_root():
 
 @app.post("/api/explain")
 def explain(req: ExplainRequest):
-    prompt = f"Explain the topic: {req.topic} in the subject of {req.subject or 'general'} like I'm 10 years old."
+    if req.detail == "simple":
+        tone = "Explain like I'm 10 years old. Use simple words and examples."
+    elif req.detail == "detailed":
+        tone = "Provide an in-depth and detailed explanation with clear structure and elaboration."
+    else:
+        tone = "Give a clear and understandable explanation"
+
+    messages = f"Topic: {req.topic}\nSubject: {req.subject}\nInstruction: {tone}"
     response = client.chat(
-        message=prompt,
+        message=messages,
         model="command-r-plus",
         temperature=0.7,
     )

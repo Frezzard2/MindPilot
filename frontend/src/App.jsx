@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 import { FiSend, FiBookOpen, FiLoader, FiDownload } from "react-icons/fi";
 import "./App.css";
+
+
+useEffect(() => {
+  loadSavedExplanations();
+}, []);
 
 function App() {
 
@@ -20,8 +27,29 @@ function App() {
 
   const [topic, setTopic] = useState("");
   const [selectedSubject, setSelectedSubject] = useState(subjects[0].id);
+  const [detailLevel, setDetailLevel] = useState("normal")
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
+  const saveExplanation = () => {
+    const saved = JSON.parse(localStorage.getItem("mindpilot_explanations")) || [];
+
+    const newEntry = {
+      topic,
+      subject: selectedSubject,
+      detail: detailLevel,
+      explanation: result,
+      timestamp: new Date().toISOString(),
+    };
+
+    localStorage.setItem("mindpilot_explanations", JSON.stringify([newEntry, ...saved]));
+    setSavedExplanations([newEntry, ...saved]);
+    alert("Explanation saved successfully!");
+  };
+  const [savedExplanations, setSavedExplanations] = useState([]);
+  const loadSavedExplanations = () => {
+    const saved = JSON.parse(localStorage.getItem("mindpilot_explanations")) || [];
+    setSavedExplanations(saved);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +59,7 @@ function App() {
       const response = await axios.post("http://localhost:8000/api/explain", {
         topic,
         subject: selectedSubject,
+        detail: detailLevel,
       });
       console.log("RESPONSE:", response.data);
       setResult(response.data.explanation);
@@ -81,6 +110,18 @@ function App() {
             borderRadius: "4px",
           }}
         />
+        <select 
+          value={detailLevel}
+          onChange={(e) => setDetailLevel(e.target.value)}
+          style={{
+            padding: "0.5rem",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+          }}>
+            <option value="simple">Simple</option>
+            <option value="normal">Normal</option>
+            <option value="detailed">Detailed</option>
+          </select>
         <button
           type="submit"
           style={{
@@ -142,7 +183,32 @@ function App() {
           <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <FiBookOpen /> Explanation
           </h2>
-          <p>{result}</p>
+          <div
+            dangerouslySetInnerHTML={{
+              __html:DOMPurify.sanitize(marked(result)),
+            }}
+            style={{
+              lineHeight: "1.6",
+              whiteSpace: "pre-line",
+          }}
+          ></div>
+          <button
+            onClick={saveExplanation}
+            style={{
+              marginTop: "1rem",
+              padding: "0.5rem 1rem",
+              backgroundColor: "#4f46e5",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <FiBookOpen /> Save Explanation
+          </button>
           <button
             onClick={handleDownload}
             style={{
@@ -158,7 +224,7 @@ function App() {
               gap: "0.5rem",
             }}
           >
-            <FiDownload /> Save Explanation
+            <FiDownload /> Download Explanation
             </button>
         </div>
       )}
