@@ -1,42 +1,86 @@
 # MindPilot
 
-🚀 AI-powered focus and productivity assistant that helps you manage your time, stay focused, and learn efficiently.
+An AI-powered study assistant that helps you focus, understand topics deeply, and track your learning progress.
 
-## Features
+---
 
-- Pomodoro-based focus timer  
-- AI-powered topic explanation and document summarization  
-- Interactive Q&A chatbot to assist learning and productivity  
-- Progress tracking and session analytics  
+## 🚀 MindPilot 1.0 - AI Study Assistant (MVP Release)
 
-## Tech Stack
+### Features:
+- AI-generated topic explanations
+- Subject and detail level selection for explanations
+- Save and review explanations on a History page (using localStorage)
+- Clean, markdown-formatted explanations rendered safely
+- Multi-page React frontend with routing (Main page and History)
+- Stable FastAPI backend integrated with Cohere API
+- Responsive, icon-enhanced design with dark mode detection
+- Download explanations as text files
 
-- Frontend: React + Tailwind CSS + Vite  
-- Backend: Python (FastAPI or Flask) with OpenAI GPT-4 API integration  
-- Database: MongoDB or Firebase (optional for progress tracking)  
-- Deployment: Vercel (frontend), Render or Heroku (backend)  
+---
 
-## Getting Started
+## 📅 Roadmap – MindPilot 2.0 and Future Enhancements
 
-1. Clone the repository  
-2. Install frontend dependencies: `npm install`  
-3. Start the frontend dev server: `npm run dev`  
-4. Set up backend environment and run API server  
-5. Configure your OpenAI API key in a `.env` file  
+### Enhanced Intelligent Learning Experience
+- 🎯 Pomodoro timer and focus session management
+- 📄 Document upload support (PDFs, notes) with AI-generated summaries
+- 💬 Interactive Q&A chatbot mode for active learning
+- 📊 Progress tracking and detailed statistics dashboard
 
-## Roadmap
+### Personalized Learning
+- 🧠 AI-powered learning style detection and adaptation
+- 🗓️ Smart calendar integration for exams and study block scheduling
+- 📝 Test generator to check knowledge retention
+- 🌐 Multi-language interface and multilingual learning support
 
-- [ ] Build Pomodoro timer component  
-- [ ] Integrate AI topic explanation API  
-- [ ] Add document upload and summarization features  
-- [ ] Implement chatbot Q&A interface  
-- [ ] Track and display user progress  
-- [ ] Prepare deployment pipelines  
+### Visualizations and Community Features
+- 🔗 Topic relationship and concept mapping visualizations
+- 📚 AI-based topic recommendation system
+- 👥 Study groups, collaborative projects, shared focus timers
 
-## Contributing
+---
 
-Contributions are welcome! Feel free to open issues or submit pull requests.
+## 📦 Installation and Running
 
-## License
+### Backend
 
-MIT License © 2025 Zsombor Frezzard  
+1. Create a virtual environment and activate it:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+
+2. Install depencies:
+pip install -r requirements.txt
+
+3. Set your Cohere API key in a .env file:
+COHERE_API_KEY=your_api_key_here
+
+4. Run the FastAPI server:
+uvicorn main:app --reload
+
+### Frontend
+
+1. Navigate to the frontend folder and install depencies:
+npm install
+
+2. Start the development server:
+npm run dev
+
+3. Open your browser at:
+http://localhost:5173
+
+---
+
+### 🤝 Contributing
+
+We welcome contributions! Feel free to submit pull requests, open issues, or suggest new features.
+
+### License
+
+This project is licensed under the MIT License.
+
+---
+
+Last updated: June 24, 2025
+
+
+
