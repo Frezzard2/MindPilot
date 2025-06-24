@@ -49,14 +49,14 @@ An AI-powered study assistant that helps you focus, understand topics deeply, an
    source venv/bin/activate
 
 2. Install depencies:
-```pip install -r requirements.txt```
-
+```pip install -r requirements.txt
+```
 3. Set your Cohere API key in a .env file:
-```COHERE_API_KEY=your_api_key_here```
-
+```COHERE_API_KEY=your_api_key_here
+```
 4. Run the FastAPI server:
-```uvicorn main:app --reload```
-
+```uvicorn main:app --reload
+```
 ### Frontend
 
 1. Navigate to the frontend folder and install depencies:
