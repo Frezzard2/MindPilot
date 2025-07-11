@@ -11,7 +11,22 @@ function History() {
     const updated = savedExplanations.filter((item) => item.timestamp !== timestamp);
     localStorage.setItem("mindpilot_explanations", JSON.stringify(updated));
     setSavedExplanations(updated);
-  }; 
+  };
+  
+  const highlightText = (text, term) => {
+    if (!term) return text;
+    const regex = new RegExp(`(${term})`, "gi");
+    const parts = text.split(regex);
+    return parts.map((part, index) => 
+      part.toLowerCase() === term.toLowerCase() ? (
+        <span key={index} style={{ backgroundColor: "#ffeb3b" }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };    
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("mindpilot_explanations")) || [];
