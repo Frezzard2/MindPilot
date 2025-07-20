@@ -21,7 +21,7 @@ app = FastAPI()
 # CORS engedélyezése a frontend számára
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["https://mindpilot.onrender.com"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

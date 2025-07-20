@@ -35,7 +35,7 @@ function MainPage() {
     setLoading(true);
     setResult("");
     try {
-      const response = await axios.post("http://0.0.0.0:10000/api/explain", {
+      const response = await axios.post("/api/explain", {
         topic,
         subject: selectedSubject,
         detail: detailLevel,
