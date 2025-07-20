@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Telepítse a backend szükséges csomagokat
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 
 # Buildelje le a frontendet
 cd frontend
