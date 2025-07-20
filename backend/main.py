@@ -1,3 +1,5 @@
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -51,3 +53,9 @@ def explain(req: ExplainRequest):
         temperature=0.7,
     )
     return {"explanation": response.text}
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+def serve_root():
+    return FileResponse("static/index.html")
