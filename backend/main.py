@@ -54,5 +54,5 @@ def explain(req: ExplainRequest):
     )
     return {"explanation": response.text}
 
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+app.mount("/", StaticFiles(directory="backend/static", html=True), name="static")
 
