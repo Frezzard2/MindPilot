@@ -53,9 +53,3 @@ def explain(req: ExplainRequest):
         temperature=0.7,
     )
     return {"explanation": response.text}
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-@app.get("/")
-def serve_root():
-    return FileResponse("static/index.html")
