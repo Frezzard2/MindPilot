@@ -53,3 +53,6 @@ def explain(req: ExplainRequest):
         temperature=0.7,
     )
     return {"explanation": response.text}
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
