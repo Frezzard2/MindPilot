@@ -1,13 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-echo "🔧 Building frontend..."
+# Telepítse a backend szükséges csomagokat
+pip install -r backend/requirements.txt
+
+# Buildelje le a frontendet
 cd frontend
 npm install
 npm run build
 
-echo "📁 Copying frontend build to backend..."
+# Másolja át a frontend buildet a backendbe (ahonnan majd a FastAPI szolgálja ki)
 rm -rf ../backend/static
 mkdir -p ../backend/static
 cp -r dist/* ../backend/static/
-
-echo "✅ Done!"
