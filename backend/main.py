@@ -33,10 +33,6 @@ class ExplainRequest(BaseModel):
     subject: Optional[str] = "general"
     detail: str
 
-@app.get("/")
-def read_root():
-    return {"message": "MindPilot backend running!"}
-
 @app.post("/api/explain")
 def explain(req: ExplainRequest):
     if req.detail == "simple":
