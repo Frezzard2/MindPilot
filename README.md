@@ -1,41 +1,80 @@
-# MindPilot
+# 🧠 MindPilot – Your Personal AI Learning Companion
 
-An AI-powered study assistant that helps you focus, understand topics deeply, and track your learning progress.
+MindPilot is an intelligent learning assistant designed to help students at every level—no matter what or how they learn. Whether you're preparing for an exam, exploring a new topic, or just trying to build a better study habit, MindPilot is your go-to companion.
 
----
+## 🚀 Vision
 
-## 🚀 MindPilot 1.0 - AI Study Assistant (MVP Release)
+To create a truly adaptive, AI-powered study partner that:
+- Understands individual learning styles.
+- Supports diverse academic goals.
+- Evolves with the student.
+- Makes learning personalized, accessible, and engaging.
 
-### Features:
-- AI-generated topic explanations
-- Subject and detail level selection for explanations
-- Save and review explanations on a History page (using localStorage)
-- Clean, markdown-formatted explanations rendered safely
-- Multi-page React frontend with routing (Main page and History)
-- Stable FastAPI backend integrated with Cohere API
-- Responsive, icon-enhanced design with dark mode detection
-- Download explanations as text files
+## 🌟 Core Features (v1.0 Launch)
 
----
+✅ **Topic Explainer** – Get AI-generated explanations tailored to your subject and detail preference.
 
-## 📅 Roadmap – MindPilot 2.0 and Future Enhancements
+✅ **Smart Explanation Detail** – Choose between simple, normal, or detailed explanations.
 
-### Enhanced Intelligent Learning Experience
-- 🎯 Pomodoro timer and focus session management
-- 📄 Document upload support (PDFs, notes) with AI-generated summaries
-- 💬 Interactive Q&A chatbot mode for active learning
-- 📊 Progress tracking and detailed statistics dashboard
+✅ **Save & Download** – Save explanations locally or download them as text files.
 
-### Personalized Learning
-- 🧠 AI-powered learning style detection and adaptation
-- 🗓️ Smart calendar integration for exams and study block scheduling
-- 📝 Test generator to check knowledge retention
-- 🌐 Multi-language interface and multilingual learning support
+✅ **Local History** – Previously saved content is stored in local storage (offline support).
 
-### Visualizations and Community Features
-- 🔗 Topic relationship and concept mapping visualizations
-- 📚 AI-based topic recommendation system
-- 👥 Study groups, collaborative projects, shared focus timers
+✅ **Markdown Rendering** – Beautiful, readable formatting with support for code, math, and lists.
+
+✅ **Clean UI** – Intuitive, responsive interface built with React and TailwindCSS.
+
+✅ **Backend-Powered by FastAPI** – Efficient and scalable backend with Cohere integration for natural language generation.
+
+## 👤 Planned for v2.0+ (User System & Personalization)
+
+🔐 **User Accounts** – Login system with secure profile management.
+
+🧬 **Learning Style Quiz** – Onboarding quiz to analyze learning habits and preferences.
+
+📊 **Adaptive Profiles** – Personalized learning profile that evolves based on progress and interactions.
+
+🧠 **AI-Based Learning Plan Generator** – Calendar-integrated planner that creates study schedules based on exams, goals, and availability.
+
+📅 **Calendar Sync** – Sync with Google Calendar / iOS / device calendars.
+
+🏆 **Milestone & Goal Tracker** – Set learning milestones with smart nudges to change ineffective habits.
+
+🗣️ **Multi-language Support** – Available in English, German, Hungarian (with room for expansion).
+
+🌐 **Community Learning** – Share progress, join group study sessions, and work on projects with friends.
+
+🧘 **Focus Mode** – Distraction-free mode with timers, soundscapes, and pomodoro-style sessions.
+
+📓 **Note-to-Explanation** – Upload notes or text files and let MindPilot explain them.
+
+🧪 **Smart Quiz Generator** – Turn materials into personalized tests, with automatic grading and feedback.
+
+💬 **AI Chat Assistant** – Conversational support for real-time Q&A and tutoring.
+
+📔 **Learning Journal** – Reflective journal that helps you track your mindset and progress.
+
+📁 **Material Import Tools** – Import study content from files, links, or external services.
+
+📚 **Learning Packs** – Curated topic bundles with learning paths and resources.
+
+🚀 **Career Path Recommender** – Get suggestions for academic/career directions based on your strengths and interests.
+
+🎯 **Gamification & Rewards** – XP, achievements, and future community events to keep users engaged.
+
+## 📱 Future Release: Mobile App (v3.0+)
+
+> The mobile version will include all essential features with enhanced support for:
+- Image-based note and quiz scanning.
+- Voice interaction.
+- Daily study reminders and widgets.
+- Offline learning.
+
+## 🧩 Tech Stack
+
+- **Frontend**: React, Vite, TailwindCSS, Axios
+- **Backend**: FastAPI, Python, Cohere API, dotenv
+- **Build Tools**: Node.js, npm, Bash
 
 ---
 
@@ -89,7 +128,7 @@ This project is licensed under the MIT License.
 
 ---
 
-Last updated: June 24, 2025
+Last updated: July 28, 2025
 
 
 
