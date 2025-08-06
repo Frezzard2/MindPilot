@@ -8,7 +8,7 @@ from typing import Optional
 import os
 import cohere
 from dotenv import load_dotenv
-from ai_service import generate_explanation
+from .ai_service import generate_explanation
 from pathlib import Path
 
 load_dotenv()
