@@ -2,13 +2,18 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 import os
 import cohere
 from dotenv import load_dotenv
+from ai_service import generate_explanation
+from pathlib import Path
 
 load_dotenv()
+
+router = APIRouter()
 
 api_key = os.getenv("COHERE_API_KEY")
 if not api_key:
@@ -21,7 +26,7 @@ app = FastAPI()
 # CORS engedélyezése a frontend számára
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://mindpilot.onrender.com"], 
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,22 +38,12 @@ class ExplainRequest(BaseModel):
     subject: Optional[str] = "general"
     detail: str
 
-@app.post("/api/explain")
-def explain(req: ExplainRequest):
-    if req.detail == "simple":
-        tone = "Explain like I'm 10 years old. Use simple words and examples."
-    elif req.detail == "detailed":
-        tone = "Provide an in-depth and detailed explanation with clear structure and elaboration."
-    else:
-        tone = "Give a clear and understandable explanation"
+@router.post("/api/explain")
+async def explain_topic(req: ExplainRequest):
+    result = generate_explanation(req.topic, req.subject, req.detail)
+    return {"explanation": result} 
 
-    messages = f"Topic: {req.topic}\nSubject: {req.subject}\nInstruction: {tone}"
-    response = client.chat(
-        message=messages,
-        model="command-r-plus",
-        temperature=0.7,
-    )
-    return {"explanation": response.text}
-
-app.mount("/", StaticFiles(directory="backend/static", html=True), name="static")
+app.include_router(router)
+static_path = Path(__file__).parent / "static"
+app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
 
