@@ -83,9 +83,14 @@ export default function LearningStyleQuiz({ onComplete }) {
             completedAt: new Date().toISOString(),
         };
 
-        localStorage.setItem("learningProfile", JSON.stringify(learningProfile));
-        setSubmitted(true);
-        if (onComplete) onComplete(learningProfile);
+        try {
+            localStorage.setItem("learningProfile", JSON.stringify(learningProfile));
+            setSubmitted(true);
+            if (onComplete) onComplete(learningProfile);
+        } catch (error) {
+            console.error('Error saving profile:', error);
+            alert('There was an error saving your profile. Please try again.');
+        }
     };
 
     if (submitted) {

@@ -8,13 +8,31 @@ import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
 function AppContent() {
   const [learningProfile, setLearningProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { isDark, toggleTheme } = useTheme();
 
   useEffect(() => {
-    const storedProfile = localStorage.getItem("learningProfile");
-    if (storedProfile) {
-      setLearningProfile(JSON.parse(storedProfile));
+    // Clean up any old corrupted data first
+    try {
+      const storedProfile = localStorage.getItem("learningProfile");
+      if (storedProfile) {
+        const parsedProfile = JSON.parse(storedProfile);
+        // Check if it's the new format (object) or old format (string)
+        if (typeof parsedProfile === 'object' && parsedProfile.type) {
+          setLearningProfile(parsedProfile.type);
+        } else if (typeof parsedProfile === 'string') {
+          setLearningProfile(parsedProfile);
+        } else {
+          // Invalid format, clear it
+          localStorage.removeItem("learningProfile");
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing stored profile:', error);
+      // If parsing fails, clear the corrupted data
+      localStorage.removeItem("learningProfile");
     }
+    setIsLoading(false);
   }, []);
 
   const handleQuizComplete = (profile) => {
@@ -24,7 +42,17 @@ function AppContent() {
   return (
     <Router>
       <div style={{ maxWidth: "800px", margin: "auto", padding: "2rem" }}>
-        {!learningProfile ? (
+        {isLoading ? (
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "center", 
+            alignItems: "center", 
+            height: "200px",
+            color: "var(--text-primary)"
+          }}>
+            Loading...
+          </div>
+        ) : !learningProfile ? (
           <LearningStyleQuiz onComplete={handleQuizComplete} />
         ) : (
           <>
