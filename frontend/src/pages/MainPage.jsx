@@ -93,7 +93,14 @@ function MainPage({ learningProfile }) {
   return (
     <div>
     {learningProfile && (
-      <div style={{ marginBottom: "1rem", background: "#eef", padding: "1rem", borderRadius: "8px"}}>
+      <div style={{ 
+        marginBottom: "1rem", 
+        background: "var(--bg-secondary)", 
+        padding: "1rem", 
+        borderRadius: "8px",
+        border: "1px solid var(--border-color)",
+        color: "var(--text-primary)"
+      }}>
         <strong>Your Learning Profile:</strong> {learningProfile}
       </div>  
     )}
@@ -110,8 +117,10 @@ function MainPage({ learningProfile }) {
           style={{
             flex: "1 1 100%",
             padding: "0.5rem",
-            border: "1px solid #ccc",
+            border: "1px solid var(--input-border)",
             borderRadius: "4px",
+            backgroundColor: "var(--input-bg)",
+            color: "var(--text-primary)",
           }}
         />
         <select
@@ -120,8 +129,10 @@ function MainPage({ learningProfile }) {
           style={{
             flex: "1 1 48%",
             padding: "0.5rem",
-            border: "1px solid #ccc",
+            border: "1px solid var(--input-border)",
             borderRadius: "4px",
+            backgroundColor: "var(--input-bg)",
+            color: "var(--text-primary)",
           }}
         >
           {subjects.map((subject) => (
@@ -136,8 +147,10 @@ function MainPage({ learningProfile }) {
           style={{
             flex: "1 1 48%",
             padding: "0.5rem",
-            border: "1px solid #ccc",
+            border: "1px solid var(--input-border)",
             borderRadius: "4px",
+            backgroundColor: "var(--input-bg)",
+            color: "var(--text-primary)",
           }}
         >
           <option value="simple">Simple</option>
@@ -149,7 +162,7 @@ function MainPage({ learningProfile }) {
           style={{
             flex: "1 1 100%",
             padding: "0.5rem 1rem",
-            backgroundColor: "#4f46e5",
+            backgroundColor: "var(--button-primary)",
             color: "white",
             border: "none",
             borderRadius: "4px",
@@ -200,7 +213,7 @@ function MainPage({ learningProfile }) {
               style={{
                 flex: 1,
                 padding: "0.5rem 1rem",
-                backgroundColor: "#4f46e5",
+                backgroundColor: "var(--button-primary)",
                 color: "white",
                 border: "none",
                 borderRadius: "4px",
@@ -216,7 +229,7 @@ function MainPage({ learningProfile }) {
               style={{
                 flex: 1,
                 padding: "0.5rem 1rem",
-                backgroundColor: "#10b981",
+                backgroundColor: "var(--button-secondary)",
                 color: "white",
                 border: "none",
                 borderRadius: "4px",

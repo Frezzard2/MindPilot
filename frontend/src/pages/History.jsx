@@ -47,7 +47,10 @@ function History() {
           width: "100%",
           padding: "0.5rem",
           marginBottom: "1rem",
-          border: "1px solid #ccc",
+          border: "1px solid var(--input-border)",
+          backgroundColor: "var(--input-bg)",
+          color: "var(--text-primary)",
+          borderRadius: "4px",
         }}
       />
       {savedExplanations.length === 0 ? (
@@ -62,7 +65,7 @@ function History() {
             className="explanation-box"
           >
             <h3>{entry.topic}</h3>
-            <p style={{ fontSize: "0.9rem", color: "#666" }}>
+            <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>
               Subject: <strong>{entry.subject}</strong> | Detail:{" "}
               <strong>{entry.detail}</strong> |{" "}
               {new Date(entry.timestamp).toLocaleString()}
@@ -78,7 +81,7 @@ function History() {
               style={{
                 marginTop: "0.5rem",
                 padding: "0.3rem 0.6rem",
-                backgroundColor: "#ef4444",
+                backgroundColor: "var(--button-danger)",
                 color: "white",
                 border: "none",
                 borderRadius: "4px",

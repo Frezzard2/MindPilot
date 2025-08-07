@@ -93,17 +93,49 @@ export default function LearningStyleQuiz({ onComplete }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="p-4 space-y-6 max-w-xl mx-auto">
-            <h2 className="text-2xl font-bold mb-4">Learning Style Quiz</h2>
+        <form onSubmit={handleSubmit} style={{ 
+            padding: "2rem", 
+            maxWidth: "600px", 
+            margin: "0 auto",
+            backgroundColor: "var(--bg-secondary)",
+            borderRadius: "8px",
+            border: "1px solid var(--border-color)",
+            boxShadow: "var(--shadow)"
+        }}>
+            <h2 style={{ 
+                fontSize: "2rem", 
+                fontWeight: "bold", 
+                marginBottom: "2rem",
+                color: "var(--text-primary)",
+                textAlign: "center"
+            }}>
+                Learning Style Quiz
+            </h2>
 
             {questions.map((q, idx) => (
-                <div key={idx} style={{ marginBottom: "1.5rem" }}>
-                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
+                <div key={idx} style={{ marginBottom: "2rem" }}>
+                    <label style={{ 
+                        display: "block", 
+                        marginBottom: "1rem", 
+                        fontWeight: "bold",
+                        color: "var(--text-primary)",
+                        fontSize: "1.1rem"
+                    }}>
                         {q.question}
                     </label>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                         {q.options.map((option, optionIdx) => (
-                            <label key={optionIdx} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                            <label key={optionIdx} className="quiz-option" style={{ 
+                                display: "flex", 
+                                alignItems: "center", 
+                                gap: "0.75rem",
+                                padding: "0.75rem",
+                                backgroundColor: "var(--bg-primary)",
+                                borderRadius: "4px",
+                                border: "1px solid var(--border-color)",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease"
+                            }}>
                                 <input
                                     type="radio"
                                     name={`question-${idx}`}
@@ -111,8 +143,9 @@ export default function LearningStyleQuiz({ onComplete }) {
                                     checked={answers[idx] === option}
                                     onChange={(e) => handleChange(idx, e.target.value)}
                                     required
+                                    style={{ margin: 0 }}
                                 />
-                                {option}
+                                <span style={{ color: "var(--text-primary)" }}>{option}</span>
                             </label>
                         ))}
                     </div>
@@ -121,7 +154,18 @@ export default function LearningStyleQuiz({ onComplete }) {
 
             <button
                 type="submit"
-                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+                style={{
+                    width: "100%",
+                    padding: "1rem",
+                    backgroundColor: "var(--button-primary)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    fontSize: "1.1rem",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease"
+                }}
             >
                 Submit Answers
             </button>
