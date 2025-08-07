@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, use } from "react";
 import axios from "axios";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
@@ -10,7 +10,7 @@ import {
   FiSave,
 } from "react-icons/fi";
 
-function MainPage() {
+function MainPage({ learningProfile }) {
   const subjects = [
     { id: "math", label: "Mathematics" },
     { id: "prog", label: "Programming" },
@@ -28,6 +28,22 @@ function MainPage() {
   const [selectedSubject, setSelectedSubject] = useState(subjects[0].id);
   const [detailLevel, setDetailLevel] = useState("normal");
   const [result, setResult] = useState("");
+  useEffect(() => {
+    if (!learningProfile) return;
+
+    const profileToDetailMap = {
+      "beginner": "simple",
+      "Visual Learner": "detailed",
+      "Text-Based Learner": "normal",
+      "Auditory Learner": "detailed",
+      "General Learner": "normal",
+    };
+
+    const mappedLevel = profileToDetailMap[learningProfile];
+    if (mappedLevel) {
+      setDetailLevel(mappedLevel);
+    }
+  }, [learningProfile]);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -76,6 +92,11 @@ function MainPage() {
 
   return (
     <div>
+    {learningProfile && (
+      <div style={{ marginBottom: "1rem", background: "#eef", padding: "1rem", borderRadius: "8px"}}>
+        <strong>Your Learning Profile:</strong> {learningProfile}
+      </div>  
+    )}
       <h1 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
         <FiBookOpen /> MindPilot
       </h1>

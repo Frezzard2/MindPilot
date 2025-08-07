@@ -9,7 +9,9 @@ import os
 import cohere
 from dotenv import load_dotenv
 from .ai_service import generate_explanation
+from .learning_profile import generate_learning_profile
 from pathlib import Path
+from typing import List
 
 load_dotenv()
 
@@ -38,12 +40,21 @@ class ExplainRequest(BaseModel):
     subject: Optional[str] = "general"
     detail: str
 
+class ProfileRequest(BaseModel):
+    answers: List[str]
+
 @router.post("/api/explain")
 async def explain_topic(req: ExplainRequest):
     result = generate_explanation(req.topic, req.subject, req.detail)
     return {"explanation": result} 
 
+@router.post("/api/profile")
+async def create_profile(req: ProfileRequest):
+    profile = generate_learning_profile(req.answers)
+    return {"profile": profile}
+
 app.include_router(router)
+
 static_path = Path(__file__).parent / "static"
 app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
 
