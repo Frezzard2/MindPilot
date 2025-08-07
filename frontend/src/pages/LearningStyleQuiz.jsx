@@ -2,16 +2,26 @@ import React, { useState } from "react";
 import { Form } from "react-router-dom";
 
 const questions = [
-    "Do you prefer reading or listening when learning something new?",
-    "How do you remember things better: writing them down or discussing them?",
-    "Do you like to learn with visuals like diagrams and charts?",
-    "How often do you take breaks during study sessions?",
-    "Do you prefer structured plans or learning freely as you go?",
-    "How comfortable are you with self-paced learning?",
-    "Do you learn better by doing (hands-on) or observing?",
-    "How often do you review old material?",
-    "Do you use digital tools (e.g., flashcards, apps) for studying?",
-    "How well do you concentrate in longer study sessions?",
+    {
+        question: "When learning something new, I prefer to:",
+        options: ["Read about it", "Listen to explanations", "See diagrams and charts", "Try it hands-on"]
+    },
+    {
+        question: "I remember information best when I:",
+        options: ["Write it down", "Discuss it with others", "See it visually", "Practice it repeatedly"]
+    },
+    {
+        question: "When studying, I like to use:",
+        options: ["Textbooks and notes", "Podcasts and videos", "Mind maps and diagrams", "Interactive exercises"]
+    },
+    {
+        question: "I prefer learning environments that are:",
+        options: ["Quiet and focused", "Interactive and social", "Visual and colorful", "Hands-on and practical"]
+    },
+    {
+        question: "When solving problems, I usually:",
+        options: ["Think through them step by step", "Talk through them with others", "Draw or visualize them", "Try different approaches"]
+    }
 ];
 
 export default function LearningStyleQuiz({ onComplete }) {
@@ -31,12 +41,49 @@ export default function LearningStyleQuiz({ onComplete }) {
             return;
         }
 
-        const learningprofile = {
+        // Analyze answers to determine learning profile
+        let profileType = "General Learner";
+        
+        // Analyze answers to determine learning style
+        const visualAnswers = answers.filter(answer => 
+            answer && (answer.toLowerCase().includes('diagram') || 
+            answer.toLowerCase().includes('chart') ||
+            answer.toLowerCase().includes('visual') ||
+            answer.toLowerCase().includes('mind maps') ||
+            answer.toLowerCase().includes('colorful'))
+        ).length;
+        
+        const auditoryAnswers = answers.filter(answer => 
+            answer && (answer.toLowerCase().includes('listen') || 
+            answer.toLowerCase().includes('discuss') ||
+            answer.toLowerCase().includes('talk') ||
+            answer.toLowerCase().includes('podcasts') ||
+            answer.toLowerCase().includes('social'))
+        ).length;
+        
+        const textAnswers = answers.filter(answer => 
+            answer && (answer.toLowerCase().includes('read') || 
+            answer.toLowerCase().includes('write') ||
+            answer.toLowerCase().includes('textbook') ||
+            answer.toLowerCase().includes('notes') ||
+            answer.toLowerCase().includes('step by step'))
+        ).length;
+
+        if (visualAnswers > auditoryAnswers && visualAnswers > textAnswers) {
+            profileType = "Visual Learner";
+        } else if (auditoryAnswers > visualAnswers && auditoryAnswers > textAnswers) {
+            profileType = "Auditory Learner";
+        } else if (textAnswers > visualAnswers && textAnswers > auditoryAnswers) {
+            profileType = "Text-Based Learner";
+        }
+
+        const learningProfile = {
+            type: profileType,
             answers,
             completedAt: new Date().toISOString(),
         };
 
-        localStorage.setItem("learning_profile", JSON.stringify(learningprofile));
+        localStorage.setItem("learningProfile", JSON.stringify(learningProfile));
         setSubmitted(true);
         if (onComplete) onComplete(learningProfile);
     };
@@ -50,14 +97,25 @@ export default function LearningStyleQuiz({ onComplete }) {
             <h2 className="text-2xl font-bold mb-4">Learning Style Quiz</h2>
 
             {questions.map((q, idx) => (
-                <div key={idx}>
-                    <label className="block mb-2 font-medium">{q}</label>
-                    <input 
-                        type="text"
-                        value={answers[idx]}
-                        onChange={(e) => handleChange(idx, e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded required"
-                    />
+                <div key={idx} style={{ marginBottom: "1.5rem" }}>
+                    <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
+                        {q.question}
+                    </label>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                        {q.options.map((option, optionIdx) => (
+                            <label key={optionIdx} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                <input
+                                    type="radio"
+                                    name={`question-${idx}`}
+                                    value={option}
+                                    checked={answers[idx] === option}
+                                    onChange={(e) => handleChange(idx, e.target.value)}
+                                    required
+                                />
+                                {option}
+                            </label>
+                        ))}
+                    </div>
                 </div>
             ))}
 

@@ -16,7 +16,7 @@ function App() {
   }, []);
 
   const handleQuizComplete = (profile) => {
-    setLearningProfile(profile);
+    setLearningProfile(profile.type);
   };
 
   return (
@@ -26,13 +26,32 @@ function App() {
           <LearningStyleQuiz onComplete={handleQuizComplete} />
         ) : (
           <>
-            <nav style={{ marginBottom: "2rem", display: "flex", gap: "1rem" }}>
-              <Link to="/" style={{ textDecoration: "none", color: "#4f46e5", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <FiBookOpen /> Main
-              </Link>
-              <Link to="/history" style={{ textDecoration: "none", color: "#4f46e5", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <FiClock /> History
-              </Link>
+            <nav style={{ marginBottom: "2rem", display: "flex", gap: "1rem", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <Link to="/" style={{ textDecoration: "none", color: "#4f46e5", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <FiBookOpen /> Main
+                </Link>
+                <Link to="/history" style={{ textDecoration: "none", color: "#4f46e5", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <FiClock /> History
+                </Link>
+              </div>
+              <button 
+                onClick={() => {
+                  localStorage.removeItem("learningProfile");
+                  setLearningProfile(null);
+                }}
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#ef4444",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "0.875rem"
+                }}
+              >
+                Reset Profile
+              </button>
             </nav>
 
             <Routes>

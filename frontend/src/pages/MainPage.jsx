@@ -32,7 +32,7 @@ function MainPage({ learningProfile }) {
     if (!learningProfile) return;
 
     const profileToDetailMap = {
-      "beginner": "simple",
+      "Beginner": "simple",
       "Visual Learner": "detailed",
       "Text-Based Learner": "normal",
       "Auditory Learner": "detailed",
