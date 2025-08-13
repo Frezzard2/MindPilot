@@ -54,12 +54,10 @@ async def create_profile(req: ProfileRequest):
     profile = generate_learning_profile(req.answers)
     return {"profile": profile}
 
-@router.post("/api/generate-tips")
-async def generate_tips(request: Request):
-    data = await request.json()
-    existing_tips = data.get("existingTips", [])
-    new_tips = generate_learning_tips(existing_tips)
-    return {"newTips": new_tips}
+@router.get("/api/generate-tips")
+async def generate_tips():
+    tips = generate_learning_tips()
+    return {"tips": tips}
 
 app.include_router(router)
 
