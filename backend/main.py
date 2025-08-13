@@ -1,6 +1,6 @@
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -10,6 +10,7 @@ import cohere
 from dotenv import load_dotenv
 from .ai_service import generate_explanation
 from .learning_profile import generate_learning_profile
+from .ai_service import generate_learning_tips
 from pathlib import Path
 from typing import List
 
@@ -52,6 +53,13 @@ async def explain_topic(req: ExplainRequest):
 async def create_profile(req: ProfileRequest):
     profile = generate_learning_profile(req.answers)
     return {"profile": profile}
+
+@router.post("/api/generate-tips")
+async def generate_tips(request: Request):
+    data = await request.json()
+    existing_tips = data.get("existingTips", [])
+    new_tips = generate_learning_tips(existing_tips)
+    return {"newTips": new_tips}
 
 app.include_router(router)
 

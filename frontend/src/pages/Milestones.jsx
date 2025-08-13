@@ -4,6 +4,8 @@ function Milestones() {
     const [title, setTitle] = useState("");
     const [deadline, setDeadline] = useState("");
     const [milestones, setMilestones] = useState([]);
+    const [tips, setTips] = useState([]);
+    const [loadingTips, setLoadingTips] = useState(false);
 
     // Calculate progress
     const completedCount = milestones.filter(m => m.completed).length;
@@ -17,6 +19,28 @@ function Milestones() {
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem("mindpilot_milestones")) || [];
         setMilestones(saved);
+    }, []);
+
+    useEffect(() => {
+        fetchTips();
+    }, []);
+
+    const fetchTips = async () => {
+        try {
+            setLoadingTips(true);
+            const res = await fetch("http://localhost:8000/api/generate-tips");
+            const data = await res.json();
+            setTips(data.tips || []);
+        } catch (error) {
+            console.error("Error fetching tips:", error);
+        } finally {
+            setLoadingTips(false);
+        }
+    };
+
+    // Fetch tips only once when the component mounts
+    useEffect(() => {
+        fetchTips();
     }, []);
 
     // Save milestones to localStorage whenever they change
@@ -228,6 +252,27 @@ function Milestones() {
                     ))}
                 </ul>
             )}
+            {/* Tips Section */}
+            <div style={{ 
+                marginBottom: "1.5rem",
+                padding: "1rem",
+                backgroundColor: "var(--bg-secondary)",
+                borderRadius: "8px",
+                border: "1px solid var(--border-color)",
+            }}>
+                <h2 style={{ marginBottom: "0.5rem", color:" var(--text-primary)"}}>💡 Learning Tips</h2>
+                {loadingTips ? (
+                    <p>Loading tips...</p>
+                ) : (
+                    <ul>
+                        {tips.map((tip, idx) => (
+                            <li key={idx} style={{ marginBottom: "0.5rem", color: "var(--text-secondary)" }}>
+                                {tip}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
         </div>
     );
 }

@@ -28,6 +28,8 @@ function MainPage({ learningProfile }) {
   const [selectedSubject, setSelectedSubject] = useState(subjects[0].id);
   const [detailLevel, setDetailLevel] = useState("normal");
   const [result, setResult] = useState("");
+  const [tips, setTips] = useState([]);
+  const [loadingTips, setLoadingTips] = useState(false);
   useEffect(() => {
     if (!learningProfile) return;
 
@@ -45,6 +47,23 @@ function MainPage({ learningProfile }) {
     }
   }, [learningProfile]);
   const [loading, setLoading] = useState(false);
+
+  const fetchTips = async () => {
+    try {
+      setLoadingTips(true);
+      const res = await fetch("http://localhost:8000/api/generate-tips");
+      const data = await res.json();
+      setTips(data.tips || []);
+    } catch (error) {
+      console.error("Error fetching tips:", error);
+    } finally {
+      setLoadingTips(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTips();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -243,6 +262,57 @@ function MainPage({ learningProfile }) {
           </div>
         </div>
       )}
+
+      {/* Learning Tips Section */}
+      <div style={{ 
+        marginTop: "2rem",
+        padding: "1.5rem",
+        backgroundColor: "var(--bg-secondary)",
+        borderRadius: "8px",
+        border: "1px solid var(--border-color)",
+        boxShadow: "var(--shadow)"
+      }}>
+        <h2 style={{ 
+          display: "flex", 
+          alignItems: "center", 
+          gap: "0.5rem",
+          marginBottom: "1rem",
+          color: "var(--text-primary)"
+        }}>
+          💡 Learning Tips
+        </h2>
+        {loadingTips ? (
+          <p style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: "0.5rem",
+            color: "var(--text-secondary)"
+          }}>
+            <FiLoader /> Loading tips...
+          </p>
+        ) : (
+          <ul style={{ 
+            listStyle: "none", 
+            padding: 0,
+            margin: 0
+          }}>
+            {tips.map((tip, idx) => (
+              <li key={idx} style={{ 
+                marginBottom: "0.75rem", 
+                padding: "0.75rem",
+                backgroundColor: "var(--bg-primary)",
+                borderRadius: "6px",
+                border: "1px solid var(--border-color)",
+                color: "var(--text-secondary)",
+                fontSize: "0.95rem",
+                lineHeight: "1.5"
+              }}>
+                {tip}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
