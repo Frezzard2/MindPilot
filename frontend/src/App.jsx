@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { FiBookOpen, FiClock, FiSun, FiMoon } from "react-icons/fi";
+import { FiBookOpen, FiClock, FiSun, FiMoon, FiTarget } from "react-icons/fi";
 import MainPage from "./pages/MainPage";
 import History from "./pages/History";
 import LearningStyleQuiz from "./pages/LearningStyleQuiz";
+import Milestones from "./pages/Milestones";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
 function AppContent() {
@@ -64,6 +65,9 @@ function AppContent() {
                 <Link to="/history" style={{ textDecoration: "none", color: "var(--link-color)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <FiClock /> History
                 </Link>
+                <Link to="/milestones" style={{ textDecoration: "none", color: "var(--link-color)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <FiTarget /> Milestones
+                </Link>
               </div>
               <div style={{ display: "flex", gap: "0.5rem" }}>
                 <button 
@@ -106,6 +110,7 @@ function AppContent() {
             <Routes>
               <Route path="/" element={<MainPage learningProfile={learningProfile} />} />
               <Route path="/history" element={<History />} />
+              <Route path="/milestones" element={<Milestones />} />
             </Routes>
           </>
         )}
