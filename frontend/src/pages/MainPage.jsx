@@ -51,7 +51,7 @@ function MainPage({ learningProfile }) {
   const fetchTips = async () => {
     try {
       setLoadingTips(true);
-      const res = await fetch("http://localhost:8000/api/generate-tips");
+      const res = await fetch("http://0.0.0.0:10000/api/generate-tips");
       const data = await res.json();
       setTips(data.tips || []);
     } catch (error) {
