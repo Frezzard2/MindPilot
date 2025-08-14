@@ -60,7 +60,7 @@ To create a truly adaptive, AI-powered study partner that:
 
 ---
 
-📱 **Future Releases**:
+## 📱 **Future Releases**:
 
 ## Mobile App **v4.0**
 
@@ -96,7 +96,7 @@ To create a truly adaptive, AI-powered study partner that:
 
 ---
 
-> Future ideas and feature updates will be visible here and!
+> Future ideas and feature updates will be visible here! Stay tuned!
 
 ---
 
