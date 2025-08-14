@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import {marked, options} from 'marked';
 import DOMPurify from 'dompurify';
-import {FiUpload, FiFileText, FiSend, FiLoader, FiBookOpen} from 'react-icons/fi';
+import {FiUpload, FiFileText, FiSend, FiLoader, FiBookOpen, FiDownload, FiSave} from 'react-icons/fi';
 
 function NotesAssistant() {
     const subjects = [
@@ -75,6 +75,33 @@ function NotesAssistant() {
             setLoading(false);
         }
     }
+
+    const saveExplanation = () => {
+        const saved = JSON.parse(localStorage.getItem("mindpilot_explanations")) || [];
+        const newEntry = {
+            topic: file ? `Notes from ${file.name}` : "Notes explanation",
+            subject: selectedSubject,
+            detail: detailLevel,
+            explanation: result,
+            timestamp: new Date().toISOString(),
+            source: "notes_assistant"
+        };
+        localStorage.setItem("mindpilot_explanations", JSON.stringify([newEntry, ...saved]));
+        alert("Explanation saved successfully!");
+    };
+
+    const handleDownload = () => {
+        const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        const fileName = file ? `${file.name.replace('.txt', '')}_explanation.txt` : "notes_explanation.txt";
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
     return (
         <div style={{ maxWidth: 800, margin: "0 auto", padding: "1rem"}}>
             <h1 style={{display: "flex", alignItems: "center", gap: "0.5rem"}}>
@@ -165,9 +192,48 @@ function NotesAssistant() {
                         <FiBookOpen /> Explanation
                     </h2>
                     <div
-                    style={{ lineHeight: 1.6}}
-                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked(result)) }}
+                        style={{ lineHeight: 1.6}}
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked(result)) }}
                     />
+                    
+                    <div style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}>
+                        <button
+                            onClick={saveExplanation}
+                            style={{
+                                flex: 1,
+                                padding: "0.5rem 1rem",
+                                backgroundColor: "var(--button-primary)",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                cursor: "pointer",
+                                transition: "background 0.2s ease"
+                            }}
+                        >
+                            <FiSave /> Save
+                        </button>
+                        <button
+                            onClick={handleDownload}
+                            style={{
+                                flex: 1,
+                                padding: "0.5rem 1rem",
+                                backgroundColor: "var(--button-secondary)",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                cursor: "pointer",
+                                transition: "background 0.2s ease"
+                            }}
+                        >
+                            <FiDownload /> Download
+                        </button>
+                    </div>
                 </div>
             )}
         </div>

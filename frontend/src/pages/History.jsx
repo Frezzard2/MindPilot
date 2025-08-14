@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiBookOpen, FiClock } from "react-icons/fi";
+import { FiBookOpen, FiClock, FiFileText } from "react-icons/fi";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 
@@ -64,10 +64,14 @@ function History() {
             key={index}
             className="explanation-box"
           >
-            <h3>{entry.topic}</h3>
+            <h3 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              {entry.source === "notes_assistant" ? <FiFileText /> : <FiBookOpen />}
+              {entry.topic}
+            </h3>
             <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>
               Subject: <strong>{entry.subject}</strong> | Detail:{" "}
               <strong>{entry.detail}</strong> |{" "}
+              {entry.source === "notes_assistant" ? "Notes Assistant" : "Topic Explainer"} |{" "}
               {new Date(entry.timestamp).toLocaleString()}
             </p>
             <div
