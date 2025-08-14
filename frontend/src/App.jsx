@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { FiBookOpen, FiClock, FiSun, FiMoon, FiTarget } from "react-icons/fi";
+import { FiBookOpen, FiClock, FiSun, FiMoon, FiTarget, FiFilePlus } from "react-icons/fi";
 import MainPage from "./pages/MainPage";
 import History from "./pages/History";
 import LearningStyleQuiz from "./pages/LearningStyleQuiz";
 import Milestones from "./pages/Milestones";
+import NotesAssistant from "./pages/NotesAssistant";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
 function AppContent() {
@@ -68,6 +69,9 @@ function AppContent() {
                 <Link to="/milestones" style={{ textDecoration: "none", color: "var(--link-color)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <FiTarget /> Milestones
                 </Link>
+                <Link to="/notes" style={{ textDecoration: "none", color: "var(--link-color)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <FiFilePlus /> Notes
+                </Link>
               </div>
               <div style={{ display: "flex", gap: "0.5rem" }}>
                 <button 
@@ -111,6 +115,7 @@ function AppContent() {
               <Route path="/" element={<MainPage learningProfile={learningProfile} />} />
               <Route path="/history" element={<History />} />
               <Route path="/milestones" element={<Milestones />} />
+              <Route path="/notes" element={<NotesAssistant />}></Route>
             </Routes>
           </>
         )}
