@@ -10,7 +10,7 @@ To create a truly adaptive, AI-powered study partner that:
 - Evolves with the student.
 - Makes learning personalized, accessible, and engaging.
 
-## 🌟 Core Features (v1.0 Launch)
+## 🌟 Core Features **v1.0**
 
 ✅ **Topic Explainer** – Get AI-generated explanations tailored to your subject and detail preference.
 
@@ -60,7 +60,7 @@ To create a truly adaptive, AI-powered study partner that:
 
 ---
 
-## 📱 Future Releases:
+📱 **Future Releases**:
 
 ## Mobile App **v4.0**
 
