@@ -1,6 +1,6 @@
-fastapi==0.115.0
-uvicorn==0.30.6
-python-multipart==0.0.9
-pydantic==2.9.2
-python-dotenv==1.0.1
-openai==1.51.2
+fastapi
+uvicorn
+python-multipart
+pydantic
+python-dotenv
+openai
