@@ -77,9 +77,10 @@ def generate_explanation_from_notes(subject: str, detail_level: str, notes: str)
 
 def generate_learning_tips() -> str:
     prompt = (
-        "Generate a list of 5 practical and effective study tips for students. "
+        "Generate exactly 5 practical and effective study tips for students. "
+        "Return ONLY a JSON array of 5 strings, each containing one tip. "
         "Each tip should be concise, actionable, and easy to understand. "
-        "Focus on techniques that improve learning efficiency and retention."
+        "Example format: ['Tip 1', 'Tip 2', 'Tip 3', 'Tip 4', 'Tip 5']"
     )
 
     client = get_client()
