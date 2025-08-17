@@ -4,7 +4,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+def get_client():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY environment variable is not set")
+    return OpenAI(api_key=api_key)
 
 def generate_explanation(topic: str, subject: str, detail:str) -> str:
     if detail == "simple":
@@ -25,6 +29,7 @@ def generate_explanation(topic: str, subject: str, detail:str) -> str:
         f"-----\n"
     )
 
+    client = get_client()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -58,6 +63,7 @@ def generate_explanation_from_notes(subject: str, detail: str, notes: str) -> st
         f"Keep it concise and focused on the main points. And be understandable."
     )
 
+    client = get_client()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -76,6 +82,7 @@ def generate_learning_tips() -> str:
         "Focus on techniques that improve learning efficiency and retention."
     )
 
+    client = get_client()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[

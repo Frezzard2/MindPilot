@@ -7,9 +7,9 @@ from pydantic import BaseModel
 from typing import Optional, List
 import os
 from dotenv import load_dotenv
-from .ai_service import generate_explanation
-from .learning_profile import generate_learning_profile
-from .ai_service import generate_learning_tips
+from ai_service import generate_explanation
+from learning_profile import generate_learning_profile
+from ai_service import generate_learning_tips
 from pathlib import Path
 
 from openai import OpenAI
@@ -17,9 +17,6 @@ from openai import OpenAI
 load_dotenv()
 
 router = APIRouter()
-
-
-client = OpenAI()
 
 app = FastAPI()
 
@@ -95,6 +92,8 @@ async def explain_from_notes(
     )
 
     try:
+        from ai_service import get_client
+        client = get_client()
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
