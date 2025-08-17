@@ -79,8 +79,8 @@ def generate_learning_tips() -> str:
     prompt = (
         "Generate exactly 5 practical and effective study tips for students. "
         "Return ONLY a JSON array of 5 strings, each containing one tip. "
-        "Each tip should be concise, actionable, and easy to understand. "
-        "Example format: ['Tip 1', 'Tip 2', 'Tip 3', 'Tip 4', 'Tip 5']"
+        "Do NOT include any markdown formatting, code blocks, or extra text. "
+        "Return ONLY the array like this: [\"tip1\", \"tip2\", \"tip3\", \"tip4\", \"tip5\"]"
     )
 
     client = get_client()
