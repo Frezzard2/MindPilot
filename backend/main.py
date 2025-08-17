@@ -2,28 +2,24 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import APIRouter
-from fastapi import UploadFile, File, Form, HTTPException
+from fastapi import UploadFile, File, Form, HTTPException, APIRouter
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 import os
-import cohere
 from dotenv import load_dotenv
 from .ai_service import generate_explanation
 from .learning_profile import generate_learning_profile
 from .ai_service import generate_learning_tips
 from pathlib import Path
-from typing import List
+
+from openai import OpenAI
 
 load_dotenv()
 
 router = APIRouter()
 
-api_key = os.getenv("COHERE_API_KEY")
-if not api_key:
-    raise ValueError("API key for Cohere is not set.")
 
-client = cohere.Client(api_key)
+client = OpenAI()
 
 app = FastAPI()
 
@@ -99,12 +95,15 @@ async def explain_from_notes(
     )
 
     try:
-        response = client.chat(
-            message=prompt,
-            model="command-r-plus",
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful study assistant."},
+                {"role": "user", "content": prompt}
+            ],
             temperature=0.7,
         )
-        return {"explanation": response.text}
+        return {"explanation": response.choices[0].message.content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating explanation: {str(e)}")
 

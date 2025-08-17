@@ -24,7 +24,7 @@ To create a truly adaptive, AI-powered study partner that:
 
 ✅ **Clean UI** – Intuitive, responsive interface built with React and TailwindCSS.
 
-✅ **Backend-Powered by FastAPI** – Efficient and scalable backend with Cohere integration for natural language generation.
+✅ **Backend-Powered by FastAPI** – Efficient and scalable backend with OpenAI integration for natural language generation.
 
 ---
 
@@ -42,7 +42,7 @@ To create a truly adaptive, AI-powered study partner that:
 
 ✅ **Clean UI** – Intuitive, responsive interface built with React and TailwindCSS.  
 
-✅ **Backend with FastAPI & Cohere** – Handles AI interactions and stores data locally.  
+✅ **Backend with FastAPI & OpenAI** – Handles AI interactions and stores data locally.  
 
 ---
 
@@ -103,7 +103,7 @@ To create a truly adaptive, AI-powered study partner that:
 ## 🧩 Tech Stack
 
 - **Frontend**: React, Vite, TailwindCSS, Axios  
-- **Backend**: FastAPI, Python, Cohere API, dotenv  
+- **Backend**: FastAPI, Python, OpenAI API, dotenv  
 - **Build Tools**: Node.js, npm, Bash  
 
 
@@ -122,9 +122,9 @@ To create a truly adaptive, AI-powered study partner that:
     ```bash
     pip install -r requirements.txt
     ```
-3. Set your Cohere API key in a .env file:
+3. Set your OpenAI API key in a .env file:
     ```bash
-    COHERE_API_KEY=your_api_key_here
+    OPENAI_API_KEY=your_api_key_here
     ```
 4. Run the FastAPI server:
     ```bash

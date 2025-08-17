@@ -5,7 +5,7 @@ services:
     buildCommand: ./build.sh
     startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
     envVars:
-      - key: COHERE_API_KEY
+      - key: OPENAI_API_KEY
         value: "80ZHjPx3qHEr2xigido1q8wF8FzGWzgkZfzwRaVZ"
     plan: free
     autoDeploy: true

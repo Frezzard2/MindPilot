@@ -1,54 +1,88 @@
 import os
-import cohere
+from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 
-COHERE_API_KEY = os.getenv("COHERE_API_KEY")
-co = cohere.Client(COHERE_API_KEY)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def generate_explanation(topic: str, subject: str, detail: str) -> str:
+def generate_explanation(topic: str, subject: str, detail:str) -> str:
+    if detail == "simple":
+        tone = "Explain it like I'm five years old, with simple words and examples."
+    elif detail == "detailed":
+        tone = "Provide an in-depth and detailed explanation with structure, headings and examples."
+    elif detail == "summary":
+        tone = "Provide a concise summary with only key points and takeaways."
+    else:
+        tone = "Give a clear and understandable explanation with short structure."
+
     prompt = (
-        f"Explain the following {subject} topic in a {detail} \n"
-        f"Topic: {topic}\n"
-        f"Explanation:"
+        f"Subject: {subject}\n"
+        f"Instruction: {tone}\n\n"
+        f"Task: Explain the following topic in markdown format:\n"
+        f"-----\n"
+        f"{topic}\n"
+        f"-----\n"
     )
 
-    try: 
-        response = co.generate(
-            model="command-r-plus",
-            prompt=prompt,
-            max_tokens=500,
-            temperature=0.7,
-        )
-        return response.generations[0].text.strip()
-    except Exception as e:
-        print(f"Error generating explanation: {e}")
-        return "An error occurred while generating the explanation."
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a helpful study assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7
+    )
 
-def generate_learning_tips(existing_tips=None):
-    if existing_tips is None:
-        existing_tips = []
-    
-    prompt = f"You are an AI tutor. Suggest 5 new, short, and practical learning tips. Make sure they are different from these existing tips: {existing_tips}. Each tip should be concise and actionable. Respond in plain text, one tip per line."
+    return response.choices[0].message.content.strip()
 
-    try:
-        response = co.generate(
-            model="command-r-plus",
-            prompt=prompt,
-            max_tokens=300,
-            temperature=0.7,
-        )
-        tips_text = response.generations[0].text.strip()
-        tips_list = [tip.strip("-• ") for tip in tips_text.split("\n") if tip.strip()]
-        
-        return tips_list
-    except Exception as e:
-        print(f"Error generating learning tips: {e}")
-        return [
-            "Break down complex topics into smaller, manageable chunks",
-            "Use active recall techniques like flashcards or self-quizzing",
-            "Teach the concept to someone else to reinforce your understanding",
-            "Take regular breaks to maintain focus and prevent burnout",
-            "Connect new information to things you already know"
-        ]
+def generate_explanation_from_notes(subject: str, detail: str, notes: str) -> str:
+    if detail == "simple":
+        tone = "Explain it like I'm five years old, with simple words and examples."
+    elif detail == "detailed":
+        tone = "Provide an in-depth and detailed explanation with structure, headings and examples."
+    elif detail == "summary":
+        tone = "Provide a concise summary with only key points and takeaways."
+    else:
+        tone = "Give a clear and understandable explanation with short structure."
+
+    prompt = (
+        f"Subject: {subject}\n"
+        f"Instruction: {tone}\n\n"
+        f"These are the student's notes:\n"
+        f"-----\n"
+        f"{notes}\n"
+        f"-----\n\n"
+        f"Task: Turn these notes into a well-structured explanation in markdown."
+        f"Use short sections with headings, bullet points, key takeaways, and examples where appropriate."
+        f"Keep it concise and focused on the main points. And be understandable."
+    )
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a helpful study assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7
+    )
+
+    return response.choices[0].message.content.strip()
+
+def generate_learning_tips() -> str:
+    prompt = (
+        "Generate a list of 5 practical and effective study tips for students. "
+        "Each tip should be concise, actionable, and easy to understand. "
+        "Focus on techniques that improve learning efficiency and retention."
+    )
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a helpful study assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7
+    )
+
+    return response.choices[0].message.content.strip()
