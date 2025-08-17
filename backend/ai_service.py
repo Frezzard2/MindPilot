@@ -41,12 +41,12 @@ def generate_explanation(topic: str, subject: str, detail:str) -> str:
 
     return response.choices[0].message.content.strip()
 
-def generate_explanation_from_notes(subject: str, detail: str, notes: str) -> str:
-    if detail == "simple":
+def generate_explanation_from_notes(subject: str, detail_level: str, notes: str) -> str:
+    if detail_level == "simple":
         tone = "Explain it like I'm five years old, with simple words and examples."
-    elif detail == "detailed":
+    elif detail_level == "detailed":
         tone = "Provide an in-depth and detailed explanation with structure, headings and examples."
-    elif detail == "summary":
+    elif detail_level == "summary":
         tone = "Provide a concise summary with only key points and takeaways."
     else:
         tone = "Give a clear and understandable explanation with short structure."

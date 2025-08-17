@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 import os
 from dotenv import load_dotenv
-from .ai_service import generate_explanation
+from .ai_service import generate_explanation, generate_explanation_from_notes
 from .learning_profile import generate_learning_profile
 from .ai_service import generate_learning_tips
 from pathlib import Path
@@ -70,39 +70,9 @@ async def explain_from_notes(
     if not content:
         raise HTTPException(status_code=400, detail="No content provided.")
     
-    if detail_level == "simple":
-        tone = "Explain like I'm five years old. Use simple words and examples."
-    elif detail_level == "detailed":
-        tone = "Provide an in-depth and detailed explanation with a clear structure, headings and examples."
-    elif detail_level == "summary":
-        tone = "Provide a concise summary with key points and main takeaways."
-    else:
-        tone = "Give a clear and understandable explanation with brief structure."
-
-    prompt = (
-        f"Subject: {subject}\n"
-        f"Instruction: {tone}\n\n"
-        f"These are the student's notes:\n"
-        f"-----\n"
-        f"{content}\n"
-        f"-----\n\n"
-        f"Task: Turn these notes into a well-structured explanation in markdown."
-        f"Use short sections with headings, bullet points, key takeaways, and examples where appropriate."
-        f"Keep it concise and focused on the main points. And be understandable."
-    )
-
     try:
-        from ai_service import get_client
-        client = get_client()
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful study assistant."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-        )
-        return {"explanation": response.choices[0].message.content}
+        result = generate_explanation_from_notes(subject, detail_level, content)
+        return {"explanation": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating explanation: {str(e)}")
 
