@@ -1,6 +1,7 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
@@ -9,6 +10,24 @@ def get_client():
     if not api_key:
         raise ValueError("OPENAI_API_KEY environment variable is not set")
     return OpenAI(api_key=api_key)
+
+def safe_parse_ai_response(content: str):
+    """
+    Safely parse AI response, handling both JSON arrays and regular text.
+    Returns the parsed content or the original content if parsing fails.
+    """
+    content = content.strip()
+    
+    # Try to parse as JSON array
+    try:
+        parsed = json.loads(content)
+        if isinstance(parsed, list):
+            return parsed
+    except json.JSONDecodeError:
+        pass
+    
+    # If it's not a valid JSON array, return as is
+    return content
 
 def generate_explanation(topic: str, subject: str, detail:str) -> str:
     if detail == "simple":
@@ -39,7 +58,8 @@ def generate_explanation(topic: str, subject: str, detail:str) -> str:
         temperature=0.7
     )
 
-    return response.choices[0].message.content.strip()
+    content = response.choices[0].message.content.strip()
+    return safe_parse_ai_response(content)
 
 def generate_explanation_from_notes(subject: str, detail_level: str, notes: str) -> str:
     if detail_level == "simple":
@@ -73,7 +93,8 @@ def generate_explanation_from_notes(subject: str, detail_level: str, notes: str)
         temperature=0.7
     )
 
-    return response.choices[0].message.content.strip()
+    content = response.choices[0].message.content.strip()
+    return safe_parse_ai_response(content)
 
 def generate_learning_tips() -> str:
     prompt = (
@@ -93,4 +114,5 @@ def generate_learning_tips() -> str:
         temperature=0.7
     )
 
-    return response.choices[0].message.content.strip()
+    content = response.choices[0].message.content.strip()
+    return safe_parse_ai_response(content)

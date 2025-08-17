@@ -1,11 +1,30 @@
 import openai
 import os
+import json
 
 def get_client():
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise ValueError("OPENAI_API_KEY environment variable is not set")
     return openai.OpenAI(api_key=api_key)
+
+def safe_parse_ai_response(content: str):
+    """
+    Safely parse AI response, handling both JSON arrays and regular text.
+    Returns the parsed content or the original content if parsing fails.
+    """
+    content = content.strip()
+    
+    # Try to parse as JSON array
+    try:
+        parsed = json.loads(content)
+        if isinstance(parsed, list):
+            return parsed
+    except json.JSONDecodeError:
+        pass
+    
+    # If it's not a valid JSON array, return as is
+    return content
 
 def generate_learning_profile(answers: list[str]) -> str:
     user_content = "Based on the following answers, generate a brief learning profile:\n"
@@ -31,4 +50,5 @@ def generate_learning_profile(answers: list[str]) -> str:
         ],
         max_tokens=300,
     )
-    return response.choices[0].message.content.strip()
+    content = response.choices[0].message.content.strip()
+    return safe_parse_ai_response(content)
