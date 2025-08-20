@@ -2,6 +2,7 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 import json
+from typing import List, Dict, Any, Optional
 
 load_dotenv()
 
@@ -116,3 +117,62 @@ def generate_learning_tips() -> str:
 
     content = response.choices[0].message.content.strip()
     return safe_parse_ai_response(content)
+
+def generate_adaptive_learning_profile(answers: List[str], locale: str = "en") -> Dict[str, Any]:
+    answer_lines = [f"{i + 1}. {str(a)}" for i, a in enumerate(answers)]
+
+    system_prompt = {
+        "en": (
+            "You are a learning science coach. Generate a concise, structured learning profile "
+            "from the user's multiple-choice and 1-10 scale answers. Keep it practical and actionable. "
+        )
+    }.get(locale, "You are a learning science coach.")
+
+    user_prompt = (
+        f"Answers (ordered):\n" +
+        "\n".join(answer_lines) +
+        "\n\nReturn STRICT JSON with keys: \n"
+        "{\n"
+        '  "styleType": "Visual | Auditory | Text-Based | Kinesthetic | Mixed",\n'
+        '  "confidence": 0.0-1.0,\n'
+        '  "strengths": [string, ...],\n'
+        '  "challenges": [string, ...],\n'
+        '  "preferredModalities": [ "reading", "listening", "visuals", "practice", ... ],\n'
+        '  "studyTactics": [string, ...],\n'
+        '  "scheduleHints": [string, ...],\n'
+        '  "motivationStyle": "short description",\n'
+        '  "focusEnvironment": [string, ...],\n'
+        '  "readingLevelHint": "short description",\n'
+        '  "version": "v1"\n'
+        "}\n"
+        "No commentary, no markdown, only valid JSON."
+    )
+
+    completion = get_client().chat.completions.create(
+        model="gpt-4o-mini",
+        response_format={"type": "json_object"},
+        temperature=0.3,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+    )
+
+    raw = completion.choices[0].message.content
+    try:
+        data = json.loads(raw)
+    except Exception:
+        data = {
+            "styleType": "Mixed",
+            "confidence": 0.5,
+            "strengths": [],
+            "challenges": [],
+            "preferredModalities": [],
+            "studyTactics": [],
+            "scheduleHints": [],
+            "motivationStyle": "-",
+            "focusEnvironment": [],
+            "readingLevelHint": "-",
+            "version": "v1"
+        }
+    return data

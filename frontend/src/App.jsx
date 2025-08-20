@@ -6,6 +6,7 @@ import History from "./pages/History";
 import LearningStyleQuiz from "./pages/LearningStyleQuiz";
 import Milestones from "./pages/Milestones";
 import NotesAssistant from "./pages/NotesAssistant";
+import ProfilePage from "./pages/ProfilePage";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
 function AppContent() {
@@ -16,23 +17,26 @@ function AppContent() {
   useEffect(() => {
     // Clean up any old corrupted data first
     try {
-      const storedProfile = localStorage.getItem("learningProfile");
+      const storedProfile = localStorage.getItem("profile");
       if (storedProfile) {
         const parsedProfile = JSON.parse(storedProfile);
-        // Check if it's the new format (object) or old format (string)
-        if (typeof parsedProfile === 'object' && parsedProfile.type) {
-          setLearningProfile(parsedProfile.type);
+        // Object (adaptive or simple) or legacy string
+        if (typeof parsedProfile === 'object') {
+          const derived = parsedProfile.styleType || parsedProfile.type;
+          if (derived) {
+            setLearningProfile(derived);
+          }
         } else if (typeof parsedProfile === 'string') {
           setLearningProfile(parsedProfile);
         } else {
           // Invalid format, clear it
-          localStorage.removeItem("learningProfile");
+          localStorage.removeItem("profile");
         }
       }
     } catch (error) {
       console.error('Error parsing stored profile:', error);
       // If parsing fails, clear the corrupted data
-      localStorage.removeItem("learningProfile");
+      localStorage.removeItem("profile");
     }
     setIsLoading(false);
   }, []);
@@ -72,6 +76,9 @@ function AppContent() {
                 <Link to="/notes" style={{ textDecoration: "none", color: "var(--link-color)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <FiFilePlus /> Notes
                 </Link>
+                <Link to="/profile" style={{ textDecoration: "none", color: "var(--link-color)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  Profile
+                </Link>
               </div>
               <div style={{ display: "flex", gap: "0.5rem" }}>
                 <button 
@@ -93,7 +100,7 @@ function AppContent() {
                 </button>
                 <button 
                   onClick={() => {
-                    localStorage.removeItem("learningProfile");
+                    localStorage.removeItem("profile");
                     setLearningProfile(null);
                   }}
                   style={{
@@ -113,9 +120,11 @@ function AppContent() {
 
             <Routes>
               <Route path="/" element={<MainPage learningProfile={learningProfile} />} />
+              <Route path="/quiz" element={<LearningStyleQuiz onComplete={handleQuizComplete} />} />
               <Route path="/history" element={<History />} />
               <Route path="/milestones" element={<Milestones />} />
               <Route path="/notes" element={<NotesAssistant />}></Route>
+              <Route path="/profile" element={<ProfilePage />}></Route>
             </Routes>
           </>
         )}

@@ -4,15 +4,13 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import UploadFile, File, Form, HTTPException, APIRouter
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Any
 import os
 from dotenv import load_dotenv
-from .ai_service import generate_explanation, generate_explanation_from_notes
-from .learning_profile import generate_learning_profile
-from .ai_service import generate_learning_tips
+from ai_service import generate_explanation, generate_explanation_from_notes
+from ai_service import generate_adaptive_learning_profile
+from ai_service import generate_learning_tips
 from pathlib import Path
-
-from openai import OpenAI
 
 load_dotenv()
 
@@ -35,8 +33,9 @@ class ExplainRequest(BaseModel):
     subject: Optional[str] = "general"
     detail: str
 
-class ProfileRequest(BaseModel):
-    answers: List[str]
+class GenerateProfileRequest(BaseModel):
+    answers: List[Any]
+    locale: Optional[str] = "en"
 
 @router.post("/api/explain")
 async def explain_topic(req: ExplainRequest):
@@ -76,15 +75,17 @@ async def explain_from_notes(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating explanation: {str(e)}")
 
-@router.post("/api/profile")
-async def create_profile(req: ProfileRequest):
-    profile = generate_learning_profile(req.answers)
-    return {"profile": profile}
+# Removed legacy /api/profile endpoint that referenced undefined ProfileRequest
 
 @router.get("/api/generate-tips")
 async def generate_tips():
     tips = generate_learning_tips()
     return {"tips": tips}
+
+@router.post("/api/profile/generate")
+def api_generate_profile(req: GenerateProfileRequest):
+    profile = generate_adaptive_learning_profile(req.answers, req.locale or "en")
+    return {"profile": profile}
 
 app.include_router(router)
 
