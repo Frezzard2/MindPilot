@@ -7,9 +7,9 @@ from pydantic import BaseModel
 from typing import Optional, List, Any
 import os
 from dotenv import load_dotenv
-from ai_service import generate_explanation, generate_explanation_from_notes
-from ai_service import generate_adaptive_learning_profile
-from ai_service import generate_learning_tips
+from .ai_service import generate_explanation, generate_explanation_from_notes
+from .ai_service import generate_adaptive_learning_profile
+from .ai_service import generate_learning_tips
 from pathlib import Path
 
 load_dotenv()
