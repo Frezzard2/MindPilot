@@ -126,6 +126,8 @@ export default function LearningStyleQuiz({ onComplete }) {
             profileType = "Auditory Learner";
         } else if (textAnswers > visualAnswers && textAnswers > auditoryAnswers) {
             profileType = "Text-Based Learner";
+        } else {
+            profileType = "Balanced Learner";
         }
 
         const learningProfile = {

@@ -19,7 +19,25 @@ function NotesAssistant() {
     ];
 
     const [selectedSubject, setSelectedSubject] = useState(subjects[0].id);
-    const [detailLevel, setDetailLevel] = useState("normal");
+    const deriveDetailFromProfile = () => {
+        
+        try {
+            const stored = localStorage.getItem("profile");
+            if (!stored) return "normal";
+            const parsed = JSON.parse(stored);
+            const type = typeof parsed === "object" ? (parsed.styleType || parsed.type) : (typeof parsed === "string" ? parsed : null);
+            const map = {
+                "Beginner": "simple",
+                "Visual Learner": "detailed",
+                "Text-Based Learner": "normal",
+                "Auditory Learner": "detailed",
+                "General Learner": "normal",
+            };
+            return map[type] || "normal";
+        } catch {
+            return "normal";
+        }
+    };
     const [notesText, setNotesText] = useState("");
     const [file, setFile] = useState(null);
     const [result, setResult] = useState("");
@@ -46,7 +64,13 @@ function NotesAssistant() {
         try {
             const formData = new FormData();
             formData.append("subject", selectedSubject);
-            formData.append("detail_level", detailLevel);
+            formData.append("detail_level", deriveDetailFromProfile());
+            try {
+                const profileRaw = localStorage.getItem("profile");
+                if (profileRaw) {
+                    formData.append("profile", profileRaw);
+                }
+            } catch {}
 
             if (file) {
                 formData.append("file", file);
@@ -81,7 +105,7 @@ function NotesAssistant() {
         const newEntry = {
             topic: file ? `Notes from ${file.name}` : "Notes explanation",
             subject: selectedSubject,
-            detail: detailLevel,
+            detail: deriveDetailFromProfile(),
             explanation: result,
             timestamp: new Date().toISOString(),
             source: "notes_assistant"
@@ -127,16 +151,12 @@ function NotesAssistant() {
                         )}
                     </select>
                         
-                    <select 
-                        value={detailLevel}
-                        onChange={(e) => setDetailLevel(e.target.value)}
-                        style={{ flex: "1 1 200px", padding: "0.5rem"}}
+                    <div 
+                        style={{ flex: "1 1 200px", padding: "0.5rem", border: "1px solid var(--border-color)", borderRadius: 6, background: "var(--bg-secondary)", color: "var(--text-secondary)" }}
+                        title="Based on your learning profile"
                     >
-                        <option value="simple">Simple</option>
-                        <option value="normal">Normal</option>
-                        <option value="detailed">Detailed</option>
-                        <option value="summary">Summary</option>
-                    </select>
+                        Detail level: {deriveDetailFromProfile()}
+                    </div>
                 </div>
 
                 <label style={{ fontWeight: 600}}>Paste notes (optional):</label>

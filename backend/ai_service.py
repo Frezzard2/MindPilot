@@ -30,7 +30,7 @@ def safe_parse_ai_response(content: str):
     # If it's not a valid JSON array, return as is
     return content
 
-def generate_explanation(topic: str, subject: str, detail:str) -> str:
+def generate_explanation(topic: str, subject: str, detail: str, profile: Optional[Dict[str, Any]] = None) -> str:
     if detail == "simple":
         tone = "Explain it like I'm five years old, with simple words and examples."
     elif detail == "detailed":
@@ -40,9 +40,40 @@ def generate_explanation(topic: str, subject: str, detail:str) -> str:
     else:
         tone = "Give a clear and understandable explanation with short structure."
 
+    style_instr = ""
+    if profile:
+        st = str(profile.get("styleType", "")).strip()
+        reading_hint = str(profile.get("readingLevelHint", "")).strip()
+        if st == "Visual":
+            style_instr += "Use clear markdown headings, bullet lists, simple tables/diagrams, and visual analogies.\n"
+        elif st == "Auditory":
+            style_instr += "Use a conversational, step-by-step narrative with rhetorical questions and short dialogues.\n"
+        elif st == "Text-Based":
+            style_instr += "Use precise definitions, concise paragraphs, and well-structured sections.\n"
+        elif st == "Kinesthetic":
+            style_instr += "Include practical steps, mini-exercises, and checklists for hands-on practice.\n"
+        # Mixed or others: light touch
+        if reading_hint:
+            style_instr += f"Reading level hint: {reading_hint}. Adapt wording accordingly.\n"
+
+        # Optional constraints
+        strengths = profile.get("strengths") or []
+        challenges = profile.get("challenges") or []
+        preferred = profile.get("preferredModalities") or []
+        if strengths or challenges or preferred:
+            style_instr += "Student profile constraints: "
+            if strengths:
+                style_instr += f"strengths={', '.join(map(str, strengths))}; "
+            if challenges:
+                style_instr += f"challenges={', '.join(map(str, challenges))}; "
+            if preferred:
+                style_instr += f"preferredModalities={', '.join(map(str, preferred))}.\n"
+
     prompt = (
         f"Subject: {subject}\n"
-        f"Instruction: {tone}\n\n"
+        f"Instruction: {tone}\n"
+        f"Personalization: {style_instr}\n"
+        f"\n"
         f"Task: Explain the following topic in markdown format:\n"
         f"-----\n"
         f"{topic}\n"
@@ -62,7 +93,7 @@ def generate_explanation(topic: str, subject: str, detail:str) -> str:
     content = response.choices[0].message.content.strip()
     return safe_parse_ai_response(content)
 
-def generate_explanation_from_notes(subject: str, detail_level: str, notes: str) -> str:
+def generate_explanation_from_notes(subject: str, detail_level: str, notes: str, profile: Optional[Dict[str, Any]] = None) -> str:
     if detail_level == "simple":
         tone = "Explain it like I'm five years old, with simple words and examples."
     elif detail_level == "detailed":
@@ -72,9 +103,38 @@ def generate_explanation_from_notes(subject: str, detail_level: str, notes: str)
     else:
         tone = "Give a clear and understandable explanation with short structure."
 
+    style_instr = ""
+    if profile:
+        st = str(profile.get("styleType", "")).strip()
+        reading_hint = str(profile.get("readingLevelHint", "")).strip()
+        if st == "Visual":
+            style_instr += "Use clear markdown headings, bullet lists, simple tables/diagrams, and visual analogies.\n"
+        elif st == "Auditory":
+            style_instr += "Use a conversational, step-by-step narrative with rhetorical questions and short dialogues.\n"
+        elif st == "Text-Based":
+            style_instr += "Use precise definitions, concise paragraphs, and well-structured sections.\n"
+        elif st == "Kinesthetic":
+            style_instr += "Include practical steps, mini-exercises, and checklists for hands-on practice.\n"
+        if reading_hint:
+            style_instr += f"Reading level hint: {reading_hint}. Adapt wording accordingly.\n"
+
+        strengths = profile.get("strengths") or []
+        challenges = profile.get("challenges") or []
+        preferred = profile.get("preferredModalities") or []
+        if strengths or challenges or preferred:
+            style_instr += "Student profile constraints: "
+            if strengths:
+                style_instr += f"strengths={', '.join(map(str, strengths))}; "
+            if challenges:
+                style_instr += f"challenges={', '.join(map(str, challenges))}; "
+            if preferred:
+                style_instr += f"preferredModalities={', '.join(map(str, preferred))}.\n"
+
     prompt = (
         f"Subject: {subject}\n"
-        f"Instruction: {tone}\n\n"
+        f"Instruction: {tone}\n"
+        f"Personalization: {style_instr}\n"
+        f"\n"
         f"These are the student's notes:\n"
         f"-----\n"
         f"{notes}\n"
@@ -133,7 +193,7 @@ def generate_adaptive_learning_profile(answers: List[str], locale: str = "en") -
         "\n".join(answer_lines) +
         "\n\nReturn STRICT JSON with keys: \n"
         "{\n"
-        '  "styleType": "Visual | Auditory | Text-Based | Kinesthetic | Mixed",\n'
+        '  "styleType": "one of: Visual, Auditory, Text-Based, Kinesthetic, Mixed",\n'
         '  "confidence": 0.0-1.0,\n'
         '  "strengths": [string, ...],\n'
         '  "challenges": [string, ...],\n'
@@ -145,6 +205,7 @@ def generate_adaptive_learning_profile(answers: List[str], locale: str = "en") -
         '  "readingLevelHint": "short description",\n'
         '  "version": "v1"\n'
         "}\n"
+        "Important: styleType MUST be a SINGLE string equal to EXACTLY one of these values: Visual, Auditory, Text-Based, Kinesthetic, Mixed. Do NOT include multiple values, separators, or lists.\n"
         "No commentary, no markdown, only valid JSON."
     )
 
@@ -175,4 +236,34 @@ def generate_adaptive_learning_profile(answers: List[str], locale: str = "en") -
             "readingLevelHint": "-",
             "version": "v1"
         }
+    # Normalize styleType to a single allowed value
+    try:
+        allowed = {"Visual", "Auditory", "Text-Based", "Kinesthetic", "Mixed", "Balanced Learner"}
+        st = str(data.get("styleType", "")).strip()
+        if "|" in st:
+            # pick the first token as dominant
+            st = st.split("|")[0].strip()
+        # map common variants
+        variants = {
+            "Visual Learner": "Visual",
+            "Auditory Learner": "Auditory",
+            "Text Based": "Text-Based",
+            "Text-Based Learner": "Text-Based",
+            "Kinesthetic Learner": "Kinesthetic",
+            "General Learner": "Mixed",
+            "Balanced": "Mixed",
+        }
+        st = variants.get(st, st)
+        if st not in allowed:
+            # try substring match
+            for cand in ["Visual", "Auditory", "Text-Based", "Kinesthetic", "Mixed"]:
+                if cand.lower() in st.lower():
+                    st = cand
+                    break
+        if st not in allowed:
+            st = "Mixed"
+        data["styleType"] = st
+    except Exception:
+        data["styleType"] = "Mixed"
+
     return data

@@ -4,13 +4,14 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import UploadFile, File, Form, HTTPException, APIRouter
 from pydantic import BaseModel
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict
 import os
 from dotenv import load_dotenv
 from .ai_service import generate_explanation, generate_explanation_from_notes
 from .ai_service import generate_adaptive_learning_profile
 from .ai_service import generate_learning_tips
 from pathlib import Path
+import json
 
 load_dotenv()
 
@@ -32,6 +33,7 @@ class ExplainRequest(BaseModel):
     topic: str
     subject: Optional[str] = "general"
     detail: str
+    profile: Optional[Dict[str, Any]] = None
 
 class GenerateProfileRequest(BaseModel):
     answers: List[Any]
@@ -39,7 +41,7 @@ class GenerateProfileRequest(BaseModel):
 
 @router.post("/api/explain")
 async def explain_topic(req: ExplainRequest):
-    result = generate_explanation(req.topic, req.subject, req.detail)
+    result = generate_explanation(req.topic, req.subject, req.detail, req.profile)
     return {"explanation": result}
 
 @router.post("/api/explain-from-notes")
@@ -47,7 +49,8 @@ async def explain_from_notes(
     subject: Optional[str] = Form("general"),
     detail_level: str = Form("normal"),
     text: Optional[str] = Form(None),
-    file: Optional[UploadFile] = File(None)
+    file: Optional[UploadFile] = File(None),
+    profile: Optional[str] = Form(None)
 ):
     content = None
     if file is not None:
@@ -68,9 +71,17 @@ async def explain_from_notes(
 
     if not content:
         raise HTTPException(status_code=400, detail="No content provided.")
-    
+
+    # Parse optional profile JSON string
+    profile_obj: Optional[Dict[str, Any]] = None
+    if profile:
+        try:
+            profile_obj = json.loads(profile)
+        except Exception:
+            profile_obj = None
+
     try:
-        result = generate_explanation_from_notes(subject, detail_level, content)
+        result = generate_explanation_from_notes(subject, detail_level, content, profile_obj)
         return {"explanation": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating explanation: {str(e)}")

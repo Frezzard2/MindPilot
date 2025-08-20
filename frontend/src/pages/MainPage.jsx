@@ -70,10 +70,13 @@ function MainPage({ learningProfile }) {
     setLoading(true);
     setResult("");
     try {
+      const profileRaw = localStorage.getItem("profile");
+      const profile = profileRaw ? JSON.parse(profileRaw) : null;
       const response = await axios.post("/api/explain", {
         topic,
         subject: selectedSubject,
         detail: detailLevel,
+        profile,
       });
       setResult(response.data.explanation);
     } catch (error) {
@@ -160,22 +163,21 @@ function MainPage({ learningProfile }) {
             </option>
           ))}
         </select>
-        <select
-          value={detailLevel}
-          onChange={(e) => setDetailLevel(e.target.value)}
+        <div
           style={{
             flex: "1 1 48%",
             padding: "0.5rem",
             border: "1px solid var(--input-border)",
             borderRadius: "4px",
-            backgroundColor: "var(--input-bg)",
-            color: "var(--text-primary)",
+            backgroundColor: "var(--bg-secondary)",
+            color: "var(--text-secondary)",
+            display: "flex",
+            alignItems: "center"
           }}
+          title="Based on your learning profile"
         >
-          <option value="simple">Simple</option>
-          <option value="normal">Normal</option>
-          <option value="detailed">Detailed</option>
-        </select>
+          Detail level: {detailLevel}
+        </div>
         <button
           type="submit"
           style={{
