@@ -20,18 +20,25 @@ function NotesAssistant() {
 
     const [selectedSubject, setSelectedSubject] = useState(subjects[0].id);
     const deriveDetailFromProfile = () => {
-        
         try {
             const stored = localStorage.getItem("profile");
             if (!stored) return "normal";
             const parsed = JSON.parse(stored);
             const type = typeof parsed === "object" ? (parsed.styleType || parsed.type) : (typeof parsed === "string" ? parsed : null);
             const map = {
+                // New styleType values (from adaptive profile)
+                "Visual": "detailed",
+                "Auditory": "detailed",
+                "Text-Based": "normal",
+                "Kinesthetic": "normal",
+                "Mixed": "normal",
+                // Legacy values (backward compatibility)
                 "Beginner": "simple",
                 "Visual Learner": "detailed",
                 "Text-Based Learner": "normal",
                 "Auditory Learner": "detailed",
                 "General Learner": "normal",
+                "Balanced Learner": "normal",
             };
             return map[type] || "normal";
         } catch {

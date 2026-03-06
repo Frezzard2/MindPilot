@@ -34,16 +34,27 @@ function MainPage({ learningProfile }) {
     if (!learningProfile) return;
 
     const profileToDetailMap = {
+      // New styleType values (from adaptive profile)
+      "Visual": "detailed",
+      "Auditory": "detailed",
+      "Text-Based": "normal",
+      "Kinesthetic": "normal",
+      "Mixed": "normal",
+      // Legacy values (backward compatibility)
       "Beginner": "simple",
       "Visual Learner": "detailed",
       "Text-Based Learner": "normal",
       "Auditory Learner": "detailed",
       "General Learner": "normal",
+      "Balanced Learner": "normal",
     };
 
     const mappedLevel = profileToDetailMap[learningProfile];
     if (mappedLevel) {
       setDetailLevel(mappedLevel);
+    } else {
+      // Default fallback
+      setDetailLevel("normal");
     }
   }, [learningProfile]);
   const [loading, setLoading] = useState(false);
